@@ -3,7 +3,11 @@ var postDatas = require('../../../data/posts-data.js');
 
 Page({
 
-    onLoad: function(option) {
+    data: {
+        isPlaying: false
+    },
+
+    onLoad: function (option) {
         //获得url？后面拼接的参数
         var postId = option.id;
         this.setData({
@@ -13,7 +17,7 @@ Page({
         //获得当前对象
         var postData = postDatas.postList[postId];
         this.setData({
-            postData:postData
+            postData: postData
         });
 
         // var postCollected = {
@@ -24,7 +28,7 @@ Page({
 
         var postsCollected = wx.getStorageSync('posts_Collected');
 
-        if(postsCollected){//如果存在缓存状态
+        if (postsCollected) {//如果存在缓存状态
 
             //获得当前的状态
             var postCollected = postsCollected[postId];
@@ -38,10 +42,23 @@ Page({
             postCollected[postId] = false;
             wx.setStorageSync('posts_Collected', postCollected);
         }
+        var that = this;
+        //监听音乐播放时间
+        wx.onBackgroundAudioPlay(()=>{
+            that.setData({
+                isPlaying:true
+            });
+        }),
+
+        wx.onBackgroundAudioPause(()=>{
+            that.setData({
+                isPlaying: false
+            });
+        });
     },
 
     // 收藏按钮
-    onCollectionTap: function(event) {
+    onCollectionTap: function (event) {
 
         //获取缓存
         var postsCollected = wx.getStorageSync('posts_Collected');
@@ -67,13 +84,21 @@ Page({
 
         wx.showToast({
             title: postCollected ? '收藏成功' : '取消成功',
-        })
+        });
+    },
+
+    getPostCollectedSync: function () {
+
+    },
+
+    getPostCollectedAsync: function () {
+
     },
 
 
 
 
-    showModel: function(postsCollected,postCollected){
+    showModel: function (postsCollected, postCollected) {
         var that = this;
         wx.showModal({
             title: '收藏',
@@ -81,8 +106,8 @@ Page({
             showCancel: 'true',
             cancelColor: '#333',
             confirmText: '确认',
-            success: function(res){
-                if (res.confirm == true){
+            success: function (res) {
+                if (res.confirm == true) {
                     //执行收藏操作
 
                     //进行存储更新
@@ -94,11 +119,58 @@ Page({
                     });
                 }
             },
-        })
+        });
     },
 
     // 分享按钮
-    onShareTap: function(event) {
+    onShareTap: function (event) {
 
+        var items = [
+            '分享给微信好友',
+            '分享到朋友圈',
+            '分享到QQ',
+            '分享到微博'];
+
+        wx.showActionSheet({
+            itemList: items,
+            itemColor: '#405f80',
+
+            success: function (res) {
+                //res.cancle //是否点击了取消
+                //res.tapIndex //点击的数组元素的下标，从0开始
+                wx.showToast({
+                    title: items[res.tapIndex],
+                })
+            },
+        });
+    },
+
+
+    onMusicTap: function (event) {
+
+        var isPlaying = this.data.isPlaying;
+
+        //获取当前的对象
+        var postData = this.data.postData;
+        var music = postData.music;
+
+        if (isPlaying) {
+            wx.pauseBackgroundAudio();
+
+            this.setData({
+                isPlaying: false
+            })
+
+        } else {
+            wx.playBackgroundAudio({
+                dataUrl: music.url,
+                title: music.title,
+                coverImgUrl: music.coverImg,
+            });
+
+            this.setData({
+                isPlaying: true
+            });
+        }
     },
 })
