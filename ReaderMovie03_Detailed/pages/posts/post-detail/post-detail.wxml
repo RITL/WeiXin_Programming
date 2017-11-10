@@ -8,7 +8,7 @@
         <text class='const-text'>发表于</text>
         <text class='date'>{{postData.dateTime}}</text>
     </view>
-    <text class='title'>{{postData/title}}</text>
+    <text class='title'>{{postData.title}}</text>
     <view class='tool'>
         <view class='circle-img'>
             <image wx:if="{{collected}}" catchtap='onCollectionTap' src="/images/icon/collection.png"></image>

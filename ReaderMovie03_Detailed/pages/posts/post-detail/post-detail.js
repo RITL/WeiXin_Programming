@@ -1,5 +1,6 @@
 /// 获得数据
 var postDatas = require('../../../data/posts-data.js');
+var app = getApp();
 
 Page({
 
@@ -8,6 +9,9 @@ Page({
     },
 
     onLoad: function (option) {
+
+        var globalData = app.globalData;
+
         //获得url？后面拼接的参数
         var postId = option.id;
         this.setData({
@@ -42,23 +46,50 @@ Page({
             postCollected[postId] = false;
             wx.setStorageSync('posts_Collected', postCollected);
         }
-        var that = this;
-        //监听音乐播放时间
-        wx.onBackgroundAudioPlay(()=>{
-            that.setData({
-                isPlaying:true
+
+        if (globalData.g_isPlayingMusic && globalData.g_currentMusicPostId === this.data.currentPostId) {
+            this.setData({
+                isPlaying: true
             });
+        }
+
+        this.setMusicMonitor();
+    },
+
+    /// 设置音频
+    setMusicMonitor:  ()=> {
+
+        var that = this;
+
+        //监听音乐播放时间
+        wx.onBackgroundAudioPlay(() => {
+            that.setData({
+                isPlaying: true
+            });
+
+            app.globalData.g_isPlayingMusic = true;
+            app.globalData.g_currentMusicPostId = that.data.currentPostId;
         }),
 
-        wx.onBackgroundAudioPause(()=>{
+            wx.onBackgroundAudioPause(() => {
+                that.setData({
+                    isPlaying: false
+                });
+                app.globalData.g_isPlayingMusic = false;
+                app.globalData.g_currentMusicPostId = null;
+            });
+
+        wx.onBackgroundAudioStop(() => {
             that.setData({
                 isPlaying: false
             });
+            app.globalData.g_isPlayingMusic = false;
+            app.globalData.g_currentMusicPostId = null;
         });
     },
 
     // 收藏按钮
-    onCollectionTap: function (event) {
+    onCollectionTap: (event) =>{
 
         //获取缓存
         var postsCollected = wx.getStorageSync('posts_Collected');
@@ -86,17 +117,6 @@ Page({
             title: postCollected ? '收藏成功' : '取消成功',
         });
     },
-
-    getPostCollectedSync: function () {
-
-    },
-
-    getPostCollectedAsync: function () {
-
-    },
-
-
-
 
     showModel: function (postsCollected, postCollected) {
         var that = this;

@@ -12,16 +12,29 @@ Page({
     },
 
 
-    onPostTap: function(event) {
+    onPostTap: function (event) {
 
         var postId = event.currentTarget.dataset.postId;
         // console.log(postId);
         wx.navigateTo({
             url: "post-detail/post-detail?id=" + postId,
-            success: function(res) {},
-            fail: function(res) {},
-            complete: function(res) {},
+            success: function (res) { },
+            fail: function (res) { },
+            complete: function (res) { },
         })
+    },
+
+
+    onSwiperTap: (event) => {
+        var postId = event.currentTarget.dataset.postId;
+        // console.log(postId);
+        wx.navigateTo({
+            url: "post-detail/post-detail?id=" + postId,
+            success: function (res) { },
+            fail: function (res) { },
+            complete: function (res) { },
+        })
+
     },
 
 
