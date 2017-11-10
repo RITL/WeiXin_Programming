@@ -14,7 +14,8 @@ Page({
 
     onPostTap: function (event) {
 
-        var postId = event.currentTarget.dataset.postId;
+        //target指的是当前点击的组件 currentTarget指的是事件捕获的组件
+        var postId = event.target.dataset.postId;
         // console.log(postId);
         wx.navigateTo({
             url: "post-detail/post-detail?id=" + postId,
@@ -26,7 +27,7 @@ Page({
 
 
     onSwiperTap: (event) => {
-        var postId = event.currentTarget.dataset.postId;
+        var postId = event.target.dataset.postId;
         // console.log(postId);
         wx.navigateTo({
             url: "post-detail/post-detail?id=" + postId,

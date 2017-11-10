@@ -14,13 +14,13 @@ Page({
 
   onTap: function (){
     //   console.log("on tap");
-        // wx.navigateTo({//进行导航跳转，进入导航的子视图
-        //     url: "../posts/posts",
-        // });
-
-        wx.redirectTo({//没有返回按钮，同级界面进行跳转
+        wx.navigateTo({//进行导航跳转，进入导航的子视图
             url: "../posts/posts",
-        })
+        }); 
+
+        // wx.redirectTo({//没有返回按钮，同级界面进行跳转
+        //     url: "../posts/posts",
+        // })
   },
 
   /**
